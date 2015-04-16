@@ -89,17 +89,17 @@
     </com.hunter123321000.ledshow.MarqueeTextView>
 
     <com.hunter123321000.ledshow.AutoResizeTextView        
+        android:background="@color/light_green"                
         android:id="@+id/tv_msg"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/ll_btn"
-        android:layout_alignParentBottom="true"
-        android:background="@color/black"
+        android:layout_alignParentBottom="true"        
         android:gravity="center_horizontal"
         android:maxLines="1"
-        android:text="@string/idle"
-        android:textColor="@color/light_green"
-        android:textSize="100sp"
+        android:text="@string/turn_left"
+        android:textColor="@color/black"
+        android:textSize="60sp"
         android:textStyle="bold" >
     </com.hunter123321000.ledshow.AutoResizeTextView>
 

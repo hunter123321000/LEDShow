@@ -42,17 +42,18 @@ public final class R {
         public static final int txt_size_32=0x7f060007;
     }
     public static final class drawable {
-        public static final int bike=0x7f020000;
-        public static final int bike2=0x7f020001;
-        public static final int bike3=0x7f020002;
-        public static final int ic_launcher=0x7f020003;
-        public static final int r1=0x7f020004;
-        public static final int r2=0x7f020005;
-        public static final int r3=0x7f020006;
-        public static final int selector_btn_txt=0x7f020007;
-        public static final int selector_login_btn=0x7f020008;
-        public static final int sign_in__enter_button=0x7f020009;
-        public static final int sign_in_not_enter_button=0x7f02000a;
+        public static final int bg_led=0x7f020000;
+        public static final int bike=0x7f020001;
+        public static final int bike2=0x7f020002;
+        public static final int bike3=0x7f020003;
+        public static final int ic_launcher=0x7f020004;
+        public static final int r1=0x7f020005;
+        public static final int r2=0x7f020006;
+        public static final int r3=0x7f020007;
+        public static final int selector_btn_txt=0x7f020008;
+        public static final int selector_login_btn=0x7f020009;
+        public static final int sign_in__enter_button=0x7f02000a;
+        public static final int sign_in_not_enter_button=0x7f02000b;
     }
     public static final class id {
         public static final int btn_msg1=0x7f0a0001;
@@ -105,6 +106,7 @@ public final class R {
         public static final int hello_world=0x7f070001;
         public static final int idle=0x7f070013;
         public static final int moving=0x7f070014;
+        public static final int non=0x7f070018;
         public static final int none_found=0x7f070007;
         public static final int none_paired=0x7f070005;
         public static final int not_connected=0x7f07000c;

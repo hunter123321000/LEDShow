@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
 	private TimerTask timerTask;
 	private int i_count = 0, bb;
 	SoundPool sound;
-
+	boolean b_flash=false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -88,7 +88,7 @@ public class MainActivity extends Activity {
 
 		tv_msg = (AutoResizeTextView) findViewById(R.id.tv_msg);
 		AssetManager mgr = getAssets();
-		Typeface face = Typeface.createFromAsset(mgr, "fonts/LEDBDREV.TTF");
+		Typeface face = Typeface.createFromAsset(mgr, "fonts/LEDBOARD.TTF");
 		tv_msg.setTypeface(face);
 
 		setView();
@@ -131,7 +131,9 @@ public class MainActivity extends Activity {
 			tv_msg.setVisibility(View.GONE);
 			img.setVisibility(View.GONE);
 		}
-		setBrightness(1);
+		setBrightness(1);			    
+		
+		
 	}
 
 	class BTN_Click implements OnClickListener {
@@ -140,8 +142,8 @@ public class MainActivity extends Activity {
 			// mtv_msg.startScroll();
 			switch (v.getId()) {
 			case R.id.btn_msg1:
-				tv_msg.setTextSize(60);
-				tv_msg.setTextColor(getResources()
+				tv_msg.setTextSize(60);				
+				tv_msg.setBackgroundColor(getResources()
 						.getColor(R.color.light_green));
 				tv_msg.setText(getResources().getString(R.string.moving));
 				mChatService.write(MSG1);
@@ -149,14 +151,14 @@ public class MainActivity extends Activity {
 				break;
 			case R.id.btn_msg2:
 				tv_msg.setTextSize(60);
-				tv_msg.setTextColor(getResources().getColor(R.color.red));
+				tv_msg.setBackgroundColor(getResources().getColor(R.color.red));
 				tv_msg.setText(getResources().getString(R.string.stop));
 				mChatService.write(MSG2);
 				mOutStringBuffer.setLength(0);
 				break;
 			case R.id.btn_msg3:
 				tv_msg.setTextSize(60);
-				tv_msg.setTextColor(getResources()
+				tv_msg.setBackgroundColor(getResources()
 						.getColor(R.color.light_green));
 				tv_msg.setText(getResources().getString(R.string.turn_left));
 				mChatService.write(MSG3);
@@ -164,7 +166,7 @@ public class MainActivity extends Activity {
 				break;
 			case R.id.btn_msg4:
 				tv_msg.setTextSize(60);
-				tv_msg.setTextColor(getResources()
+				tv_msg.setBackgroundColor(getResources()
 						.getColor(R.color.light_green));
 				tv_msg.setText(getResources().getString(R.string.turn_right));
 				mChatService.write(MSG4);
@@ -365,21 +367,21 @@ public class MainActivity extends Activity {
 								}
 							}
 						};
-						timer.schedule(timerTask, 1000, 1000);
+						timer.schedule(timerTask, 500, 500);
 					} else {
 						i_count = 0;
 						handler.sendMessage(handler.obtainMessage(1, 0));
 					}
 
-					tv_msg.setTextColor(getResources().getColor(
+					tv_msg.setBackgroundColor(getResources().getColor(
 							R.color.light_green));
 					tv_msg.setText(getResources().getString(R.string.moving));
 					break;
 				case 2:
 					sound.release();//可立即STOP 音效					
 					sound = new SoundPool(1, AudioManager.STREAM_MUSIC, 100);					
-					
-					tv_msg.setTextColor(getResources().getColor(R.color.red));
+					bb = sound.load(MainActivity.this, R.raw.bb, 1);
+					tv_msg.setBackgroundColor(getResources().getColor(R.color.red));
 					tv_msg.setText(getResources().getString(R.string.stop));
 					handler.sendMessage(handler.obtainMessage(0, i_count));
 					break;
@@ -402,12 +404,12 @@ public class MainActivity extends Activity {
 								}
 							}
 						};
-						timer.schedule(timerTask, 1000, 1000);
+						timer.schedule(timerTask, 500, 500);
 					} else {
 						handler.sendMessage(handler.obtainMessage(1, 3));
 					}
 
-					tv_msg.setTextColor(getResources().getColor(
+					tv_msg.setBackgroundColor(getResources().getColor(
 							R.color.light_green));
 					tv_msg.setText(getResources().getString(R.string.turn_left));
 					break;
@@ -430,12 +432,12 @@ public class MainActivity extends Activity {
 								}
 							}
 						};
-						timer.schedule(timerTask, 1000, 1000);
+						timer.schedule(timerTask, 500, 500);
 					} else {
 						handler.sendMessage(handler.obtainMessage(1, 6));
 					}
 
-					tv_msg.setTextColor(getResources().getColor(
+					tv_msg.setBackgroundColor(getResources().getColor(
 							R.color.light_green));
 					tv_msg.setText(getResources()
 							.getString(R.string.turn_right));
@@ -453,6 +455,7 @@ public class MainActivity extends Activity {
 				Toast.makeText(getApplicationContext(),
 						msg.getData().getString(TOAST), Toast.LENGTH_SHORT)
 						.show();
+				sound.release();	
 				finish();
 				break;
 			}
@@ -486,13 +489,51 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void handleMessage(Message msg) {
-			int myCount = Integer.valueOf(msg.obj.toString());
+			int myCount = Integer.valueOf(msg.obj.toString());			
 			switch (msg.what) {
 			case 0:				
 				stopTimer();				
 				break;
-			case 1:				
-				setImageViewSrc(myCount);				
+			case 1:
+				setImageViewSrc(myCount);
+				switch(myCount){
+				case 0:
+				case 1:
+				case 2:
+					if(b_flash==false){
+						b_flash=true;
+						tv_msg.setText(getResources().getString(R.string.moving));
+					}else{
+						Log.i("0.0", "1111111111");
+						b_flash=false;
+						tv_msg.setText(getResources().getString(R.string.non));
+					}
+					break;
+				case 3:
+				case 4:
+				case 5:
+					if(b_flash==false){
+						b_flash=true;
+						tv_msg.setText(getResources().getString(R.string.turn_left));
+					}else{
+						Log.i("0.0", "1111111111");
+						b_flash=false;
+						tv_msg.setText(getResources().getString(R.string.non));
+					}
+					break;
+				case 6:
+				case 7:
+				case 8:
+					if(b_flash==false){
+						b_flash=true;
+						tv_msg.setText(getResources().getString(R.string.turn_right));
+					}else{
+						Log.i("0.0", "1111111111");
+						b_flash=false;
+						tv_msg.setText(getResources().getString(R.string.non));
+					}
+					break;
+				}				
 				break;			
 			}
 		}
@@ -536,7 +577,7 @@ public class MainActivity extends Activity {
 			img.setImageResource(R.drawable.bike3);
 			break;
 		case 3:
-			sound.play(bb, 1, 1, 0, 0, 1);
+			sound.play(bb, 1, 1, 0, 0, 1);			
 			img.setImageResource(R.drawable.r1);
 			break;
 		case 4:			

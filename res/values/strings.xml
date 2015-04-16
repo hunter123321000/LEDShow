@@ -22,11 +22,12 @@
     <string name="connect">Connect a device</string>
     <string name="discoverable">Make discoverable</string>
     
-    <string name="idle">&#160;&#160;I&#160;d&#160;l&#160;e&#160;&#160;</string>
+    <string name="idle">&#160;&#160;&#160;&#160;I&#160;d&#160;l&#160;e&#160;&#160;&#160;&#160;</string>
     <string name="moving">&#160;&#160;M&#160;o&#160;v&#160;i&#160;n&#160;g&#160;&#160;</string>
     <string name="stop">&#160;&#160;&#160;&#160;S&#160;t&#160;o&#160;p&#160;&#160;&#160;&#160;</string>
     <string name="turn_right">&#160;&#160;&#160;R&#160;i&#160;g&#160;h&#160;t&#160;&#160;&#160;</string>
     <string name="turn_left">&#160;&#160;&#160;&#160;L&#160;e&#160;f&#160;t&#160;&#160;&#160;&#160;</string>
+    <string name="non">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
     
          
 
