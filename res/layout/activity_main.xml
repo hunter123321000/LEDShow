@@ -20,6 +20,7 @@
             android:orientation="vertical" >
 
             <Button
+                android:textSize="@dimen/txt_size_28"
                 android:id="@+id/btn_msg1"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -31,6 +32,7 @@
                 android:textStyle="bold" />
 
             <Button
+                android:textSize="@dimen/txt_size_28"
                 android:id="@+id/btn_msg2"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -50,6 +52,7 @@
             android:orientation="vertical" >
 
             <Button
+                android:textSize="@dimen/txt_size_28"
                 android:id="@+id/btn_msg3"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -61,6 +64,7 @@
                 android:textStyle="bold" />
 
             <Button
+                android:textSize="@dimen/txt_size_28"
                 android:id="@+id/btn_msg4"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -89,6 +93,7 @@
     </com.hunter123321000.ledshow.MarqueeTextView>
 
     <com.hunter123321000.ledshow.AutoResizeTextView        
+        android:visibility="gone"
         android:background="@color/light_green"                
         android:id="@+id/tv_msg"
         android:layout_width="fill_parent"
@@ -104,11 +109,13 @@
     </com.hunter123321000.ledshow.AutoResizeTextView>
 
     <ImageView        
+        android:visibility="gone"
         android:id="@+id/img"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/tv_msg"
         android:scaleType="fitXY"
         android:src="@drawable/bike" />
+    
 
 </RelativeLayout>

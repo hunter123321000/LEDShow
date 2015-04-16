@@ -2,11 +2,13 @@ package com.hunter123321000.ledshow;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.WindowManager;
 
 public class function {
-
+	
 	public static  boolean isPad(Context cnt) {
 		WindowManager wm = (WindowManager) cnt.getSystemService(Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
@@ -22,8 +24,9 @@ public class function {
 		double screenInches = Math.sqrt(x + y);
 		// 大於6吋則為平板
 		if (screenInches >= 6.0) {
-			return true;
+			return false;
 		}
-		return true;
+		return false;
 	}
+	
 }

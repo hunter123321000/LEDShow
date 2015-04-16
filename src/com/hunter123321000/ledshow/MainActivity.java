@@ -19,6 +19,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -69,13 +70,17 @@ public class MainActivity extends Activity {
 	public static final byte[] MSG2 = { 0x02 }; // lower than 128
 	public static final byte[] MSG3 = { 0x03 }; // lower than 128
 	public static final byte[] MSG4 = { 0x04 }; // lower than 128
-
+	//文字顯示
 	LinearLayout ll_btn;
 	private Timer timer;
 	private TimerTask timerTask;
 	private int i_count = 0, bb;
 	SoundPool sound;
-	boolean b_flash=false;
+	boolean b_flash = false;
+	//手勢判斷	
+	float upX, upY, downX, downY;
+	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -104,14 +109,14 @@ public class MainActivity extends Activity {
 		}
 		sound = new SoundPool(1, AudioManager.STREAM_MUSIC, 100);
 		bb = sound.load(MainActivity.this, R.raw.bb, 1);
-		
+
 	}
 
 	void setView() {
-		Button btn_msg1 = (Button) findViewById(R.id.btn_msg1);
-		Button btn_msg2 = (Button) findViewById(R.id.btn_msg2);
-		Button btn_msg3 = (Button) findViewById(R.id.btn_msg3);
-		Button btn_msg4 = (Button) findViewById(R.id.btn_msg4);
+		btn_msg1 = (Button) findViewById(R.id.btn_msg1);
+		btn_msg2 = (Button) findViewById(R.id.btn_msg2);
+		btn_msg3 = (Button) findViewById(R.id.btn_msg3);
+		btn_msg4 = (Button) findViewById(R.id.btn_msg4);
 		ll_btn = (LinearLayout) findViewById(R.id.ll_btn);
 		img = (ImageView) findViewById(R.id.img);
 
@@ -131,9 +136,8 @@ public class MainActivity extends Activity {
 			tv_msg.setVisibility(View.GONE);
 			img.setVisibility(View.GONE);
 		}
-		setBrightness(1);			    
-		
-		
+		setBrightness(1);
+
 	}
 
 	class BTN_Click implements OnClickListener {
@@ -142,9 +146,9 @@ public class MainActivity extends Activity {
 			// mtv_msg.startScroll();
 			switch (v.getId()) {
 			case R.id.btn_msg1:
-				tv_msg.setTextSize(60);				
-				tv_msg.setBackgroundColor(getResources()
-						.getColor(R.color.light_green));
+				tv_msg.setTextSize(60);
+				tv_msg.setBackgroundColor(getResources().getColor(
+						R.color.light_green));
 				tv_msg.setText(getResources().getString(R.string.moving));
 				mChatService.write(MSG1);
 				mOutStringBuffer.setLength(0);
@@ -158,16 +162,16 @@ public class MainActivity extends Activity {
 				break;
 			case R.id.btn_msg3:
 				tv_msg.setTextSize(60);
-				tv_msg.setBackgroundColor(getResources()
-						.getColor(R.color.light_green));
+				tv_msg.setBackgroundColor(getResources().getColor(
+						R.color.light_green));
 				tv_msg.setText(getResources().getString(R.string.turn_left));
 				mChatService.write(MSG3);
 				mOutStringBuffer.setLength(0);
 				break;
 			case R.id.btn_msg4:
 				tv_msg.setTextSize(60);
-				tv_msg.setBackgroundColor(getResources()
-						.getColor(R.color.light_green));
+				tv_msg.setBackgroundColor(getResources().getColor(
+						R.color.light_green));
 				tv_msg.setText(getResources().getString(R.string.turn_right));
 				mChatService.write(MSG4);
 				mOutStringBuffer.setLength(0);
@@ -348,8 +352,8 @@ public class MainActivity extends Activity {
 				mConversationArrayAdapter.add(mConnectedDeviceName + ":  "
 						+ readMessage);
 				switch (msg.arg1) {
-				case 1:					
-					pauseTimer();										
+				case 1:
+					pauseTimer();
 					if (timerTask == null) {
 						i_count = 0;
 						timer = new Timer();
@@ -378,10 +382,11 @@ public class MainActivity extends Activity {
 					tv_msg.setText(getResources().getString(R.string.moving));
 					break;
 				case 2:
-					sound.release();//可立即STOP 音效					
-					sound = new SoundPool(1, AudioManager.STREAM_MUSIC, 100);					
+					sound.release();// 可立即STOP 音效
+					sound = new SoundPool(1, AudioManager.STREAM_MUSIC, 100);
 					bb = sound.load(MainActivity.this, R.raw.bb, 1);
-					tv_msg.setBackgroundColor(getResources().getColor(R.color.red));
+					tv_msg.setBackgroundColor(getResources().getColor(
+							R.color.red));
 					tv_msg.setText(getResources().getString(R.string.stop));
 					handler.sendMessage(handler.obtainMessage(0, i_count));
 					break;
@@ -455,7 +460,7 @@ public class MainActivity extends Activity {
 				Toast.makeText(getApplicationContext(),
 						msg.getData().getString(TOAST), Toast.LENGTH_SHORT)
 						.show();
-				sound.release();	
+				sound.release();
 				finish();
 				break;
 			}
@@ -489,58 +494,61 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void handleMessage(Message msg) {
-			int myCount = Integer.valueOf(msg.obj.toString());			
+			int myCount = Integer.valueOf(msg.obj.toString());
 			switch (msg.what) {
-			case 0:				
-				stopTimer();				
+			case 0:
+				stopTimer();
 				break;
 			case 1:
 				setImageViewSrc(myCount);
-				switch(myCount){
+				switch (myCount) {
 				case 0:
 				case 1:
 				case 2:
-					if(b_flash==false){
-						b_flash=true;
-						tv_msg.setText(getResources().getString(R.string.moving));
-					}else{
+					if (b_flash == false) {
+						b_flash = true;
+						tv_msg.setText(getResources()
+								.getString(R.string.moving));
+					} else {
 						Log.i("0.0", "1111111111");
-						b_flash=false;
+						b_flash = false;
 						tv_msg.setText(getResources().getString(R.string.non));
 					}
 					break;
 				case 3:
 				case 4:
 				case 5:
-					if(b_flash==false){
-						b_flash=true;
-						tv_msg.setText(getResources().getString(R.string.turn_left));
-					}else{
+					if (b_flash == false) {
+						b_flash = true;
+						tv_msg.setText(getResources().getString(
+								R.string.turn_left));
+					} else {
 						Log.i("0.0", "1111111111");
-						b_flash=false;
+						b_flash = false;
 						tv_msg.setText(getResources().getString(R.string.non));
 					}
 					break;
 				case 6:
 				case 7:
 				case 8:
-					if(b_flash==false){
-						b_flash=true;
-						tv_msg.setText(getResources().getString(R.string.turn_right));
-					}else{
+					if (b_flash == false) {
+						b_flash = true;
+						tv_msg.setText(getResources().getString(
+								R.string.turn_right));
+					} else {
 						Log.i("0.0", "1111111111");
-						b_flash=false;
+						b_flash = false;
 						tv_msg.setText(getResources().getString(R.string.non));
 					}
 					break;
-				}				
-				break;			
+				}
+				break;
 			}
 		}
 	};
 
 	private void stopTimer() {
-		img.setImageResource(R.drawable.bike);		
+		img.setImageResource(R.drawable.bike);
 		if (timerTask != null) {
 			timerTask.cancel();
 			timerTask = null;
@@ -577,28 +585,79 @@ public class MainActivity extends Activity {
 			img.setImageResource(R.drawable.bike3);
 			break;
 		case 3:
-			sound.play(bb, 1, 1, 0, 0, 1);			
+			sound.play(bb, 1, 1, 0, 0, 1);
 			img.setImageResource(R.drawable.r1);
 			break;
-		case 4:			
-			img.setImageResource(R.drawable.r2); 
+		case 4:
+			img.setImageResource(R.drawable.r2);
 			break;
-		case 5:			
+		case 5:
 			img.setImageResource(R.drawable.r3);
 			break;
 		case 6:
 			sound.play(bb, 1, 1, 0, 0, 1);
 			img.setImageResource(R.drawable.bike);
 			break;
-		case 7:			
+		case 7:
 			img.setImageResource(R.drawable.bike2);
 			break;
-		case 8:			
+		case 8:
 			img.setImageResource(R.drawable.bike3);
 			break;
 		case 9:
 			break;
 		}
+	}
+
+	public boolean onTouchEvent(MotionEvent event) {
+
+		float X = event.getX(); // 觸控的 X 軸位置
+		float Y = event.getY(); // 觸控的 Y 軸位置
+
+		switch (event.getAction()) { // 判斷觸控的動作
+
+		case MotionEvent.ACTION_DOWN: // 按下
+			downX = event.getX();
+			downY = event.getY();
+
+			return true;
+		case MotionEvent.ACTION_MOVE: // 拖曳
+
+			return true;
+		case MotionEvent.ACTION_UP: // 放開
+			Log.d("onTouchEvent-ACTION_UP", "UP");
+			upX = event.getX();
+			upY = event.getY();
+			float x = Math.abs(upX - downX);
+			float y = Math.abs(upY - downY);
+			double z = Math.sqrt(x * x + y * y);
+			int jiaodu = Math.round((float) (Math.asin(y / z) / Math.PI * 180));// 角度
+
+			if (upY < downY && jiaodu > 45) {// 上
+				btn_msg1.performClick();
+				Log.d("onTouchEvent-ACTION_UP", "角度:" + jiaodu + ", 動作:上");
+			} else if (upY > downY && jiaodu > 45) {// 下
+				btn_msg2.performClick();
+				Log.d("onTouchEvent-ACTION_UP", "角度:" + jiaodu + ", 動作:下");
+			} else if (upX < downX && jiaodu <= 45) {// 左				
+				Log.d("onTouchEvent-ACTION_UP", "角度:" + jiaodu + ", 動作:左");
+				btn_msg3.performClick();
+				// // 原方向不是向右時，方向轉右
+				// if (mDirection != EAST) {
+				// mNextDirection = WEST;
+				// }
+			} else if (upX > downX && jiaodu <= 45) {// 右
+				Log.d("onTouchEvent-ACTION_UP", "角度:" + jiaodu + ", 動作:右");
+				btn_msg4.performClick();				
+				// 原方向不是向左時，方向轉右
+				// if (mDirection ! = WEST) {
+				// mNextDirection = EAST;
+				// }
+			}			
+			return true;
+		}
+
+		return super.onTouchEvent(event);
 	}
 
 	public void setBrightness(float f) {
