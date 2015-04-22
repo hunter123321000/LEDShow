@@ -1,20 +1,31 @@
 package com.hunter123321000.ledshow;
 
+import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.PointF;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
+import android.util.FloatMath;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,15 +33,17 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AbsoluteLayout;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AbsoluteLayout.LayoutParams;
 
 import com.example.android.BluetoothChat.BluetoothChatService;
 import com.example.android.BluetoothChat.DeviceListActivity;
@@ -38,8 +51,8 @@ import com.example.android.BluetoothChat.DeviceListActivity;
 public class MainActivity extends Activity {
 	MarqueeTextView mtv_msg;
 	AutoResizeTextView tv_msg;
-	ImageView img;
-	Button btn_msg1, btn_msg2, btn_msg3, btn_msg4;
+	ImageView img, ig1, ig2, ig3, ig4;
+	ImageView btn_msg1, btn_msg2, btn_msg3, btn_msg4;
 	BTN_Click btn_onclick;
 	// Local Bluetooth adapter
 	private BluetoothAdapter mBluetoothAdapter = null;
@@ -70,16 +83,20 @@ public class MainActivity extends Activity {
 	public static final byte[] MSG2 = { 0x02 }; // lower than 128
 	public static final byte[] MSG3 = { 0x03 }; // lower than 128
 	public static final byte[] MSG4 = { 0x04 }; // lower than 128
-	//文字顯示
-	LinearLayout ll_btn;
+	// 文字顯示
+	AbsoluteLayout rl_btn;
 	private Timer timer;
 	private TimerTask timerTask;
 	private int i_count = 0, bb;
 	SoundPool sound;
 	boolean b_flash = false;
-	//手勢判斷	
+	// 手勢判斷
 	float upX, upY, downX, downY;
-	
+	//
+	float f_max_high, f_max_width;
+
+	float m_lastTouchX, m_lastTouchY, m_posX, m_posY, m_prevX, m_prevY,
+			m_imgXB, m_imgYB, m_imgXC, m_imgYC, m_dx, m_dy;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -113,12 +130,44 @@ public class MainActivity extends Activity {
 	}
 
 	void setView() {
-		btn_msg1 = (Button) findViewById(R.id.btn_msg1);
-		btn_msg2 = (Button) findViewById(R.id.btn_msg2);
-		btn_msg3 = (Button) findViewById(R.id.btn_msg3);
-		btn_msg4 = (Button) findViewById(R.id.btn_msg4);
-		ll_btn = (LinearLayout) findViewById(R.id.ll_btn);
+		btn_msg1 = (ImageView) findViewById(R.id.btn_msg1);
+		btn_msg2 = (ImageView) findViewById(R.id.btn_msg2);
+		btn_msg3 = (ImageView) findViewById(R.id.btn_msg3);
+		btn_msg4 = (ImageView) findViewById(R.id.btn_msg4);
+
+		rl_btn = (AbsoluteLayout) findViewById(R.id.rl_btn);
+		ig1 = new TouchImageView(MainActivity.this, null);
+		ig1.setId(1);
+		ig1.setBackgroundResource(R.drawable.right);
+		rl_btn.addView(ig1, new LayoutParams(50, 50, 0, 0));
+
+		ig2 = new TouchImageView(MainActivity.this, null);
+		ig2.setId(2);
+		ig2.setBackgroundResource(R.drawable.left);
+		rl_btn.addView(ig2, new LayoutParams(50, 50, 200, 0));
+
+		ig3 = new TouchImageView(MainActivity.this, null);
+		ig3.setId(3);
+		ig3.setBackgroundResource(R.drawable.goahead);
+		rl_btn.addView(ig3, new LayoutParams(50, 50, 0, 200));
+		ig4 = new TouchImageView(MainActivity.this, null);
+		ig4.setId(4);
+		ig4.setBackgroundResource(R.drawable.stop);
+		rl_btn.addView(ig4, new LayoutParams(50, 50, 200, 200));
+
+		// ig1.setOnTouchListener(new TouchListener());
+		// ig2.setOnTouchListener(new TouchListener());
+		ig1.setOnTouchListener(m_onTouchListener);
+		ig2.setOnTouchListener(m_onTouchListener);
+		ig3.setOnTouchListener(m_onTouchListener);
+		ig4.setOnTouchListener(m_onTouchListener);
+
 		img = (ImageView) findViewById(R.id.img);
+		// img.setOnTouchListener(new TouchListener());
+		btn_msg1.setOnTouchListener(new TouchListener());
+		btn_msg2.setOnTouchListener(new TouchListener());
+		btn_msg3.setOnTouchListener(new TouchListener());
+		btn_msg4.setOnTouchListener(new TouchListener());
 
 		btn_onclick = new BTN_Click();
 		btn_msg1.setOnClickListener(btn_onclick);
@@ -127,7 +176,7 @@ public class MainActivity extends Activity {
 		btn_msg4.setOnClickListener(btn_onclick);
 
 		if (function.isPad(MainActivity.this) == true) {
-			ll_btn.setVisibility(View.GONE);
+			rl_btn.setVisibility(View.GONE);
 			RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tv_msg
 					.getLayoutParams();
 			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -137,7 +186,6 @@ public class MainActivity extends Activity {
 			img.setVisibility(View.GONE);
 		}
 		setBrightness(1);
-
 	}
 
 	class BTN_Click implements OnClickListener {
@@ -237,7 +285,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.i("0.0", "onActivityResult " + resultCode);
+
 		switch (requestCode) {
 		case REQUEST_CONNECT_DEVICE:
 			// When DeviceListActivity returns with a device to connect
@@ -250,7 +298,7 @@ public class MainActivity extends Activity {
 						.getRemoteDevice(address);
 				// Attempt to connect to the device
 				mChatService.connect(device);
-				Log.i("0.0", "BT enabled");
+
 			}
 			break;
 		case REQUEST_ENABLE_BT:
@@ -299,6 +347,7 @@ public class MainActivity extends Activity {
 				mChatService.start();
 			}
 		}
+		determinaterange();
 	}
 
 	@Override
@@ -510,7 +559,6 @@ public class MainActivity extends Activity {
 						tv_msg.setText(getResources()
 								.getString(R.string.moving));
 					} else {
-						Log.i("0.0", "1111111111");
 						b_flash = false;
 						tv_msg.setText(getResources().getString(R.string.non));
 					}
@@ -523,7 +571,6 @@ public class MainActivity extends Activity {
 						tv_msg.setText(getResources().getString(
 								R.string.turn_left));
 					} else {
-						Log.i("0.0", "1111111111");
 						b_flash = false;
 						tv_msg.setText(getResources().getString(R.string.non));
 					}
@@ -536,7 +583,6 @@ public class MainActivity extends Activity {
 						tv_msg.setText(getResources().getString(
 								R.string.turn_right));
 					} else {
-						Log.i("0.0", "1111111111");
 						b_flash = false;
 						tv_msg.setText(getResources().getString(R.string.non));
 					}
@@ -639,7 +685,7 @@ public class MainActivity extends Activity {
 			} else if (upY > downY && jiaodu > 45) {// 下
 				btn_msg2.performClick();
 				Log.d("onTouchEvent-ACTION_UP", "角度:" + jiaodu + ", 動作:下");
-			} else if (upX < downX && jiaodu <= 45) {// 左				
+			} else if (upX < downX && jiaodu <= 45) {// 左
 				Log.d("onTouchEvent-ACTION_UP", "角度:" + jiaodu + ", 動作:左");
 				btn_msg3.performClick();
 				// // 原方向不是向右時，方向轉右
@@ -648,12 +694,12 @@ public class MainActivity extends Activity {
 				// }
 			} else if (upX > downX && jiaodu <= 45) {// 右
 				Log.d("onTouchEvent-ACTION_UP", "角度:" + jiaodu + ", 動作:右");
-				btn_msg4.performClick();				
+				btn_msg4.performClick();
 				// 原方向不是向左時，方向轉右
 				// if (mDirection ! = WEST) {
 				// mNextDirection = EAST;
 				// }
-			}			
+			}
 			return true;
 		}
 
@@ -665,4 +711,244 @@ public class MainActivity extends Activity {
 		lp.screenBrightness = f;
 		getWindow().setAttributes(lp);
 	}
+
+	private final class TouchListener implements OnTouchListener {
+
+		private PointF startPoint = new PointF();
+		private Matrix matrix = new Matrix();
+		private Matrix currentMatrix = new Matrix();
+		private int mode = 0;
+		private static final int DRAG = 1;
+		private static final int ZOOM = 2;
+		private float startDis;
+		private PointF midPoint;
+
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			// RelativeLayout.LayoutParams param = new
+			// RelativeLayout.LayoutParams(
+			// LayoutParams.FILL_PARENT,
+			// LayoutParams.FILL_PARENT);
+			// btn_msg1.setLayoutParams(param);
+			// btn_msg2.setLayoutParams(param);
+			// btn_msg3.setLayoutParams(param);
+			// btn_msg4.setLayoutParams(param);
+
+			ImageView img_show = new ImageView(MainActivity.this);
+			Log.i("0.0", "id=" + v.getId() + "\r\nig1=" + ig1);
+			switch (v.getId()) {
+			case 1:
+				img_show = ig1;
+				break;
+			case 2:
+				img_show = ig2;
+				break;
+			case R.id.btn_msg1:
+				img_show = btn_msg1;
+				break;
+			case R.id.btn_msg2:
+				img_show = btn_msg2;
+				break;
+			case R.id.btn_msg3:
+				img_show = btn_msg3;
+				break;
+			case R.id.btn_msg4:
+				img_show = btn_msg4;
+				break;
+			}
+			Log.i("0.0", "Action=" + event.getAction() + "   img_show="
+					+ img_show);
+			switch (event.getAction() & MotionEvent.ACTION_MASK) {
+			case MotionEvent.ACTION_DOWN:
+				mode = DRAG;
+				currentMatrix.set(img_show.getImageMatrix());
+				startPoint.set(event.getX(), event.getY());
+				break;
+			case MotionEvent.ACTION_MOVE:
+				if (mode == DRAG) {
+					float dx = event.getX() - startPoint.x;
+					float dy = event.getY() - startPoint.y;
+
+					matrix.set(currentMatrix);
+					matrix.postTranslate(dx, dy);
+				} else if (mode == ZOOM) {
+					float endDis = distance(event);
+					if (endDis > 10f) {
+						float scale = endDis / startDis;
+						matrix.postScale(scale, scale, midPoint.x, midPoint.y);
+					}
+
+				}
+
+				break;
+			case MotionEvent.ACTION_UP:
+				break;
+			case MotionEvent.ACTION_POINTER_UP:
+				mode = 0;
+				break;
+			case MotionEvent.ACTION_POINTER_DOWN:
+				mode = ZOOM;
+				startDis = distance(event);
+				if (startDis > 10f) {
+					midPoint = mid(event);
+					currentMatrix.set(img_show.getImageMatrix());
+				}
+				break;
+			}
+
+			float[] f = new float[9];
+			matrix.getValues(f);
+			for (int i = 0; i < 9; i++) {
+				Log.i("0.0", "f[" + i + "]=" + f[i]);
+			}
+			if (f[0] < 0.1f)
+				f[0] = 0.1f;
+			if (f[4] < 0.1f)
+				f[4] = 0.1f;
+			if (f[0] > 1.1f)
+				f[0] = 1.1f;
+			if (f[4] > 1.1f)
+				f[4] = 1.1f;
+			if (f[2] < 0.0f)
+				f[2] = 0.0f;
+			if (f[5] < 0.0f)
+				f[5] = 0.0f;
+			if (f[2] > f_max_width)
+				f[2] = f_max_width;
+			if (f[5] > f_max_high)
+				f[5] = f_max_high;
+
+			matrix.setValues(f);
+			img_show.setImageMatrix(matrix);
+			return true;
+		}
+
+	}
+
+	public static float distance(MotionEvent event) {
+		float dx = event.getX(1) - event.getX(0);
+		float dy = event.getY(1) - event.getY(0);
+		return FloatMath.sqrt(dx * dx + dy * dy);
+	}
+
+	private static PointF mid(MotionEvent event) {
+		float midX = (event.getX(1) + event.getX(0)) / 2;
+		float midY = (event.getY(1) + event.getY(0)) / 2;
+		return new PointF(midX, midY);
+	}
+
+	private void determinaterange() {
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+		int height = displaymetrics.heightPixels;
+		int width = displaymetrics.widthPixels;
+		f_max_high = height - tv_msg.getHeight();
+		f_max_width = width;
+		Log.i("0.0", "height=" + height + "\r\nwidth=" + width
+				+ "\r\ntv_msg.getHeight()=" + tv_msg.getHeight()
+				+ "\r\ntv_msg.getWidth()=" + tv_msg.getWidth()
+				+ "\r\nf_max_high=" + f_max_high + "\r\nf_max_width="
+				+ f_max_width);
+	}
+
+	OnTouchListener m_onTouchListener = new OnTouchListener() {
+		private PointF startPoint = new PointF();
+		private int mode = 0;
+		private static final int DRAG = 1;
+		private static final int ZOOM = 2;
+		private float startDis, dx, dy, scale;
+		private PointF midPoint;
+
+		@Override
+		public boolean onTouch(View p_v, MotionEvent p_event) {
+			switch (p_event.getAction() & MotionEvent.ACTION_MASK) {
+
+			case MotionEvent.ACTION_DOWN: {
+				m_lastTouchX = p_event.getX();
+				m_lastTouchY = p_event.getY();
+
+				mode = DRAG;
+				startPoint.set(p_event.getX(), p_event.getY());
+
+				break;
+			}
+			case MotionEvent.ACTION_UP: {
+				mode = 0;
+				break;
+			}
+
+			case MotionEvent.ACTION_MOVE:
+				if (mode == DRAG) {
+					dx = p_event.getX() - startPoint.x;
+					dy = p_event.getY() - startPoint.y;
+
+					m_dx = p_event.getX() - m_lastTouchX;
+					m_dy = p_event.getY() - m_lastTouchY;
+
+					m_posX = m_prevX + m_dx;
+					m_posY = m_prevY + m_dy;
+
+					if (m_posX > 0 && m_posY > 0
+							&& (m_posX + p_v.getWidth()) < rl_btn.getWidth()
+							&& (m_posY + p_v.getHeight()) < rl_btn.getHeight()) {
+						p_v.setLayoutParams(new AbsoluteLayout.LayoutParams(p_v
+								.getMeasuredWidth(), p_v.getMeasuredHeight(),
+								(int) m_posX, (int) m_posY));
+
+						m_prevX = m_posX;
+						m_prevY = m_posY;
+
+					}
+
+				} else if (mode == ZOOM) {
+					Log.i("0.0", "ACTION_MOVE > ZOOM");
+					float endDis = distance(p_event);
+					if (endDis > 10f) {
+						scale = endDis / startDis;
+					}
+
+				}
+
+				break;
+
+			case MotionEvent.ACTION_POINTER_UP:
+				Log.i("0.0", "ACTION_POINTER_UP > scale=" + scale);
+				mode = 0;
+				if ((rl_btn.getWidth() < (int) (p_v.getMeasuredWidth() * scale))
+						|| (rl_btn.getHeight() < (int) (p_v.getMeasuredHeight() * scale))) {
+					scale = 1;
+					p_v.setLayoutParams(new AbsoluteLayout.LayoutParams(
+							(int) (p_v.getMeasuredWidth() * scale), (int) (p_v
+									.getMeasuredHeight() * scale),
+							(int) p_event.getX(), (int) p_event.getY()));
+				} else if ((20 > (int) (p_v.getMeasuredWidth() * scale))
+						|| (20 > (int) (p_v.getMeasuredHeight() * scale))) {
+					scale = 1;
+					p_v.setLayoutParams(new AbsoluteLayout.LayoutParams(
+							(int) (p_v.getMeasuredWidth() * scale), (int) (p_v
+									.getMeasuredHeight() * scale),
+							(int) p_event.getX(), (int) p_event.getY()));
+				} else {
+					p_v.setLayoutParams(new AbsoluteLayout.LayoutParams(
+							(int) (p_v.getMeasuredWidth() * scale), (int) (p_v
+									.getMeasuredHeight() * scale),
+							(int) midPoint.x, (int) midPoint.y));
+				}
+				break;
+			case MotionEvent.ACTION_POINTER_DOWN:
+				Log.i("0.0", "ACTION_POINTER_DOWN");
+				mode = ZOOM;
+				startDis = distance(p_event);
+				if (startDis > 10f) {
+					midPoint = mid(p_event);
+
+				}
+				break;
+
+			}
+
+			return true;
+		}
+	};
+
 }

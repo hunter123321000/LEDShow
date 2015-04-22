@@ -1,5 +1,8 @@
 package com.hunter123321000.ledshow;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -8,9 +11,10 @@ import android.view.MotionEvent;
 import android.view.WindowManager;
 
 public class function {
-	
-	public static  boolean isPad(Context cnt) {
-		WindowManager wm = (WindowManager) cnt.getSystemService(Context.WINDOW_SERVICE);
+
+	public static boolean isPad(Context cnt) {
+		WindowManager wm = (WindowManager) cnt
+				.getSystemService(Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
 		// ¼e«×
 		float screenWidth = display.getWidth();
@@ -28,5 +32,6 @@ public class function {
 		}
 		return false;
 	}
-	
+
+
 }

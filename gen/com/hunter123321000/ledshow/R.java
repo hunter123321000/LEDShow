@@ -46,14 +46,18 @@ public final class R {
         public static final int bike=0x7f020001;
         public static final int bike2=0x7f020002;
         public static final int bike3=0x7f020003;
-        public static final int ic_launcher=0x7f020004;
-        public static final int r1=0x7f020005;
-        public static final int r2=0x7f020006;
-        public static final int r3=0x7f020007;
-        public static final int selector_btn_txt=0x7f020008;
-        public static final int selector_login_btn=0x7f020009;
-        public static final int sign_in__enter_button=0x7f02000a;
-        public static final int sign_in_not_enter_button=0x7f02000b;
+        public static final int goahead=0x7f020004;
+        public static final int ic_launcher=0x7f020005;
+        public static final int left=0x7f020006;
+        public static final int r1=0x7f020007;
+        public static final int r2=0x7f020008;
+        public static final int r3=0x7f020009;
+        public static final int right=0x7f02000a;
+        public static final int selector_btn_txt=0x7f02000b;
+        public static final int selector_login_btn=0x7f02000c;
+        public static final int sign_in__enter_button=0x7f02000d;
+        public static final int sign_in_not_enter_button=0x7f02000e;
+        public static final int stop=0x7f02000f;
     }
     public static final class id {
         public static final int btn_msg1=0x7f0a0001;
@@ -68,10 +72,10 @@ public final class R {
         public static final int edit_text_out=0x7f0a0012;
         public static final int img=0x7f0a0007;
         public static final int in=0x7f0a000f;
-        public static final int ll_btn=0x7f0a0000;
         public static final int mtv_msg=0x7f0a0005;
         public static final int new_devices=0x7f0a000d;
         public static final int paired_devices=0x7f0a000b;
+        public static final int rl_btn=0x7f0a0000;
         public static final int scan=0x7f0a0014;
         public static final int title_left_text=0x7f0a0008;
         public static final int title_new_devices=0x7f0a000c;
