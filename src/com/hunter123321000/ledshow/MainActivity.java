@@ -361,7 +361,7 @@ public class MainActivity extends Activity {
 							@Override
 							public void run() {
 								i_count++;
-								if (i_count < 3) {
+								if (i_count < 2) {
 									handler.sendMessage(handler.obtainMessage(
 											1, i_count));
 								} else {
@@ -382,6 +382,7 @@ public class MainActivity extends Activity {
 					tv_msg.setText(getResources().getString(R.string.moving));
 					break;
 				case 2:
+					img.setImageResource(R.drawable.stopb_01);
 					sound.release();// 可立即STOP 音效
 					sound = new SoundPool(1, AudioManager.STREAM_MUSIC, 100);
 					bb = sound.load(MainActivity.this, R.raw.bb, 1);
@@ -393,7 +394,7 @@ public class MainActivity extends Activity {
 				case 3:
 					pauseTimer();
 					if (timerTask == null) {
-						i_count = 2;
+						i_count = 1;
 						timer = new Timer();
 						timerTask = new TimerTask() {
 							@Override
@@ -403,7 +404,7 @@ public class MainActivity extends Activity {
 									handler.sendMessage(handler.obtainMessage(
 											1, i_count));
 								} else {
-									i_count = 3;
+									i_count = 2;
 									handler.sendMessage(handler.obtainMessage(
 											1, i_count));
 								}
@@ -411,7 +412,7 @@ public class MainActivity extends Activity {
 						};
 						timer.schedule(timerTask, 500, 500);
 					} else {
-						handler.sendMessage(handler.obtainMessage(1, 3));
+						handler.sendMessage(handler.obtainMessage(1, 2));
 					}
 
 					tv_msg.setBackgroundColor(getResources().getColor(
@@ -427,7 +428,7 @@ public class MainActivity extends Activity {
 							@Override
 							public void run() {
 								i_count++;
-								if (i_count < 9) {
+								if (i_count < 10) {
 									handler.sendMessage(handler.obtainMessage(
 											1, i_count));
 								} else {
@@ -503,18 +504,17 @@ public class MainActivity extends Activity {
 				setImageViewSrc(myCount);
 				switch (myCount) {
 				case 0:
-				case 1:
-				case 2:
+				case 1:				
 					if (b_flash == false) {
 						b_flash = true;
 						tv_msg.setText(getResources()
 								.getString(R.string.moving));
-					} else {
-						Log.i("0.0", "1111111111");
+					} else {						
 						b_flash = false;
 						tv_msg.setText(getResources().getString(R.string.non));
 					}
 					break;
+				case 2:
 				case 3:
 				case 4:
 				case 5:
@@ -522,8 +522,7 @@ public class MainActivity extends Activity {
 						b_flash = true;
 						tv_msg.setText(getResources().getString(
 								R.string.turn_left));
-					} else {
-						Log.i("0.0", "1111111111");
+					} else {						
 						b_flash = false;
 						tv_msg.setText(getResources().getString(R.string.non));
 					}
@@ -531,12 +530,12 @@ public class MainActivity extends Activity {
 				case 6:
 				case 7:
 				case 8:
+				case 9:
 					if (b_flash == false) {
 						b_flash = true;
 						tv_msg.setText(getResources().getString(
 								R.string.turn_right));
-					} else {
-						Log.i("0.0", "1111111111");
+					} else {						
 						b_flash = false;
 						tv_msg.setText(getResources().getString(R.string.non));
 					}
@@ -548,7 +547,7 @@ public class MainActivity extends Activity {
 	};
 
 	private void stopTimer() {
-		img.setImageResource(R.drawable.bike);
+		img.setImageResource(R.drawable.stopb_01);
 		if (timerTask != null) {
 			timerTask.cancel();
 			timerTask = null;
@@ -576,35 +575,36 @@ public class MainActivity extends Activity {
 		int myCount = count % 10;
 		switch (myCount) {
 		case 0:
-			img.setImageResource(R.drawable.bike);
+			img.setImageResource(R.drawable.gob_01);
 			break;
 		case 1:
-			img.setImageResource(R.drawable.bike2);
+			img.setImageResource(R.drawable.gob_02);
 			break;
 		case 2:
-			img.setImageResource(R.drawable.bike3);
-			break;
-		case 3:
 			sound.play(bb, 1, 1, 0, 0, 1);
-			img.setImageResource(R.drawable.r1);
+			img.setImageResource(R.drawable.leftb_01);
+			break;
+		case 3:			
+			img.setImageResource(R.drawable.leftb_02);
 			break;
 		case 4:
-			img.setImageResource(R.drawable.r2);
+			img.setImageResource(R.drawable.leftb_03);
 			break;
 		case 5:
-			img.setImageResource(R.drawable.r3);
+			img.setImageResource(R.drawable.leftb_04);
 			break;
 		case 6:
 			sound.play(bb, 1, 1, 0, 0, 1);
-			img.setImageResource(R.drawable.bike);
+			img.setImageResource(R.drawable.rightb_01);
 			break;
 		case 7:
-			img.setImageResource(R.drawable.bike2);
+			img.setImageResource(R.drawable.rightb_02);
 			break;
 		case 8:
-			img.setImageResource(R.drawable.bike3);
+			img.setImageResource(R.drawable.rightb_03);
 			break;
 		case 9:
+			img.setImageResource(R.drawable.rightb_04);
 			break;
 		}
 	}
