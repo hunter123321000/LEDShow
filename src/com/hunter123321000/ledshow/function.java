@@ -24,7 +24,7 @@ public class function {
 		double screenInches = Math.sqrt(x + y);
 		// 大於6吋則為平板
 		if (screenInches >= 6.0) {
-			return false;
+			return true;
 		}
 		return false;
 	}

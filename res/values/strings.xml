@@ -29,7 +29,10 @@
     <string name="turn_left">&#160;&#160;&#160;&#160;L&#160;e&#160;f&#160;t&#160;&#160;&#160;&#160;</string>
     <string name="non">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
     
-    
+    <string-array name="lv_choice">
+        <item>Connect a device</item>
+        <item>Make discoverable</item>        
+    </string-array>
          
 
 </resources>

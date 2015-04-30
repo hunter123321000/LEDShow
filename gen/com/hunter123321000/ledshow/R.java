@@ -8,6 +8,9 @@
 package com.hunter123321000.ledshow;
 
 public final class R {
+    public static final class array {
+        public static final int lv_choice=0x7f080000;
+    }
     public static final class attr {
     }
     public static final class color {
@@ -46,50 +49,52 @@ public final class R {
         public static final int bike=0x7f020001;
         public static final int bike2=0x7f020002;
         public static final int bike3=0x7f020003;
-        public static final int gob_01=0x7f020004;
-        public static final int gob_02=0x7f020005;
-        public static final int ic_launcher=0x7f020006;
-        public static final int leftb_01=0x7f020007;
-        public static final int leftb_02=0x7f020008;
-        public static final int leftb_03=0x7f020009;
-        public static final int leftb_04=0x7f02000a;
-        public static final int r1=0x7f02000b;
-        public static final int r2=0x7f02000c;
-        public static final int r3=0x7f02000d;
-        public static final int rightb_01=0x7f02000e;
-        public static final int rightb_02=0x7f02000f;
-        public static final int rightb_03=0x7f020010;
-        public static final int rightb_04=0x7f020011;
-        public static final int selector_btn_txt=0x7f020012;
-        public static final int selector_login_btn=0x7f020013;
-        public static final int sign_in__enter_button=0x7f020014;
-        public static final int sign_in_not_enter_button=0x7f020015;
-        public static final int stopb_01=0x7f020016;
-        public static final int stopb_02=0x7f020017;
+        public static final int goa=0x7f020004;
+        public static final int goa2=0x7f020005;
+        public static final int gob_01=0x7f020006;
+        public static final int gob_02=0x7f020007;
+        public static final int ic_launcher=0x7f020008;
+        public static final int leftb_01=0x7f020009;
+        public static final int leftb_02=0x7f02000a;
+        public static final int leftb_03=0x7f02000b;
+        public static final int leftb_04=0x7f02000c;
+        public static final int r1=0x7f02000d;
+        public static final int r2=0x7f02000e;
+        public static final int r3=0x7f02000f;
+        public static final int rightb_01=0x7f020010;
+        public static final int rightb_02=0x7f020011;
+        public static final int rightb_03=0x7f020012;
+        public static final int rightb_04=0x7f020013;
+        public static final int selector_btn_txt=0x7f020014;
+        public static final int selector_login_btn=0x7f020015;
+        public static final int sign_in__enter_button=0x7f020016;
+        public static final int sign_in_not_enter_button=0x7f020017;
+        public static final int stopb_01=0x7f020018;
+        public static final int stopb_02=0x7f020019;
     }
     public static final class id {
-        public static final int btn_msg1=0x7f0a0001;
-        public static final int btn_msg2=0x7f0a0002;
-        public static final int btn_msg3=0x7f0a0003;
-        public static final int btn_msg4=0x7f0a0004;
-        public static final int button_call=0x7f0a0010;
-        public static final int button_hangup=0x7f0a0011;
-        public static final int button_scan=0x7f0a000e;
-        public static final int button_send=0x7f0a0013;
-        public static final int discoverable=0x7f0a0015;
-        public static final int edit_text_out=0x7f0a0012;
-        public static final int img=0x7f0a0007;
-        public static final int in=0x7f0a000f;
-        public static final int ll_btn=0x7f0a0000;
-        public static final int mtv_msg=0x7f0a0005;
-        public static final int new_devices=0x7f0a000d;
-        public static final int paired_devices=0x7f0a000b;
-        public static final int scan=0x7f0a0014;
-        public static final int title_left_text=0x7f0a0008;
-        public static final int title_new_devices=0x7f0a000c;
-        public static final int title_paired_devices=0x7f0a000a;
-        public static final int title_right_text=0x7f0a0009;
-        public static final int tv_msg=0x7f0a0006;
+        public static final int btn_msg1=0x7f0b0001;
+        public static final int btn_msg2=0x7f0b0002;
+        public static final int btn_msg3=0x7f0b0003;
+        public static final int btn_msg4=0x7f0b0004;
+        public static final int button_call=0x7f0b0010;
+        public static final int button_hangup=0x7f0b0011;
+        public static final int button_scan=0x7f0b000e;
+        public static final int button_send=0x7f0b0013;
+        public static final int discoverable=0x7f0b0015;
+        public static final int edit_text_out=0x7f0b0012;
+        public static final int img=0x7f0b0007;
+        public static final int in=0x7f0b000f;
+        public static final int ll_btn=0x7f0b0000;
+        public static final int mtv_msg=0x7f0b0005;
+        public static final int new_devices=0x7f0b000d;
+        public static final int paired_devices=0x7f0b000b;
+        public static final int scan=0x7f0b0014;
+        public static final int title_left_text=0x7f0b0008;
+        public static final int title_new_devices=0x7f0b000c;
+        public static final int title_paired_devices=0x7f0b000a;
+        public static final int title_right_text=0x7f0b0009;
+        public static final int tv_msg=0x7f0b0006;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -100,7 +105,7 @@ public final class R {
         public static final int message=0x7f030005;
     }
     public static final class menu {
-        public static final int option_menu=0x7f090000;
+        public static final int option_menu=0x7f0a0000;
     }
     public static final class raw {
         public static final int bb=0x7f040000;
@@ -156,10 +161,10 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f080000;
+        public static final int AppBaseTheme=0x7f090000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f080001;
+        public static final int AppTheme=0x7f090001;
     }
 }

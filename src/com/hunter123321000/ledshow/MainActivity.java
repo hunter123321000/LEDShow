@@ -4,8 +4,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
@@ -22,6 +25,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
@@ -70,16 +74,17 @@ public class MainActivity extends Activity {
 	public static final byte[] MSG2 = { 0x02 }; // lower than 128
 	public static final byte[] MSG3 = { 0x03 }; // lower than 128
 	public static final byte[] MSG4 = { 0x04 }; // lower than 128
-	//文字顯示
+	// 文字顯示
 	LinearLayout ll_btn;
 	private Timer timer;
 	private TimerTask timerTask;
 	private int i_count = 0, bb;
 	SoundPool sound;
 	boolean b_flash = false;
-	//手勢判斷	
+	// 手勢判斷
 	float upX, upY, downX, downY;
-	
+	// 彈跳選單
+	private AlertDialog mutiItemDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +118,8 @@ public class MainActivity extends Activity {
 	}
 
 	void setView() {
+		mutiItemDialog = getMutiItemDialog(getResources().getStringArray(
+				R.array.lv_choice));
 		btn_msg1 = (Button) findViewById(R.id.btn_msg1);
 		btn_msg2 = (Button) findViewById(R.id.btn_msg2);
 		btn_msg3 = (Button) findViewById(R.id.btn_msg3);
@@ -127,6 +134,7 @@ public class MainActivity extends Activity {
 		btn_msg4.setOnClickListener(btn_onclick);
 
 		if (function.isPad(MainActivity.this) == true) {
+			setBrightness(1);
 			ll_btn.setVisibility(View.GONE);
 			RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tv_msg
 					.getLayoutParams();
@@ -136,8 +144,22 @@ public class MainActivity extends Activity {
 			tv_msg.setVisibility(View.GONE);
 			img.setVisibility(View.GONE);
 		}
-		setBrightness(1);
+		img.setOnLongClickListener(new OnLongClickListener() {
 
+			@Override
+			public boolean onLongClick(View v) {
+				mutiItemDialog.show();
+				return false;
+			}
+		});
+		ll_btn.setOnLongClickListener(new OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View v) {
+				mutiItemDialog.show();
+				return false;
+			}
+		});
 	}
 
 	class BTN_Click implements OnClickListener {
@@ -504,12 +526,12 @@ public class MainActivity extends Activity {
 				setImageViewSrc(myCount);
 				switch (myCount) {
 				case 0:
-				case 1:				
+				case 1:
 					if (b_flash == false) {
 						b_flash = true;
 						tv_msg.setText(getResources()
 								.getString(R.string.moving));
-					} else {						
+					} else {
 						b_flash = false;
 						tv_msg.setText(getResources().getString(R.string.non));
 					}
@@ -522,7 +544,7 @@ public class MainActivity extends Activity {
 						b_flash = true;
 						tv_msg.setText(getResources().getString(
 								R.string.turn_left));
-					} else {						
+					} else {
 						b_flash = false;
 						tv_msg.setText(getResources().getString(R.string.non));
 					}
@@ -535,7 +557,7 @@ public class MainActivity extends Activity {
 						b_flash = true;
 						tv_msg.setText(getResources().getString(
 								R.string.turn_right));
-					} else {						
+					} else {
 						b_flash = false;
 						tv_msg.setText(getResources().getString(R.string.non));
 					}
@@ -575,16 +597,16 @@ public class MainActivity extends Activity {
 		int myCount = count % 10;
 		switch (myCount) {
 		case 0:
-			img.setImageResource(R.drawable.gob_01);
+			img.setImageResource(R.drawable.goa);
 			break;
 		case 1:
-			img.setImageResource(R.drawable.gob_02);
+			img.setImageResource(R.drawable.goa2);
 			break;
 		case 2:
-			sound.play(bb, 1, 1, 0, 0, 1);
+			// sound.play(bb, 1, 1, 0, 0, 1);
 			img.setImageResource(R.drawable.leftb_01);
 			break;
-		case 3:			
+		case 3:
 			img.setImageResource(R.drawable.leftb_02);
 			break;
 		case 4:
@@ -594,7 +616,7 @@ public class MainActivity extends Activity {
 			img.setImageResource(R.drawable.leftb_04);
 			break;
 		case 6:
-			sound.play(bb, 1, 1, 0, 0, 1);
+			// sound.play(bb, 1, 1, 0, 0, 1);
 			img.setImageResource(R.drawable.rightb_01);
 			break;
 		case 7:
@@ -639,7 +661,7 @@ public class MainActivity extends Activity {
 			} else if (upY > downY && jiaodu > 45) {// 下
 				btn_msg2.performClick();
 				Log.d("onTouchEvent-ACTION_UP", "角度:" + jiaodu + ", 動作:下");
-			} else if (upX < downX && jiaodu <= 45) {// 左				
+			} else if (upX < downX && jiaodu <= 45) {// 左
 				Log.d("onTouchEvent-ACTION_UP", "角度:" + jiaodu + ", 動作:左");
 				btn_msg3.performClick();
 				// // 原方向不是向右時，方向轉右
@@ -648,12 +670,12 @@ public class MainActivity extends Activity {
 				// }
 			} else if (upX > downX && jiaodu <= 45) {// 右
 				Log.d("onTouchEvent-ACTION_UP", "角度:" + jiaodu + ", 動作:右");
-				btn_msg4.performClick();				
+				btn_msg4.performClick();
 				// 原方向不是向左時，方向轉右
 				// if (mDirection ! = WEST) {
 				// mNextDirection = EAST;
 				// }
-			}			
+			}
 			return true;
 		}
 
@@ -665,4 +687,28 @@ public class MainActivity extends Activity {
 		lp.screenBrightness = f;
 		getWindow().setAttributes(lp);
 	}
+
+	public AlertDialog getMutiItemDialog(final String[] items) {
+		Builder builder = new Builder(MainActivity.this);
+		// 設定對話框內的項目
+		builder.setItems(items, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
+				case 0:
+					Intent serverIntent = new Intent(MainActivity.this,
+							DeviceListActivity.class);
+					startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+					break;
+				case 1:
+					ensureDiscoverable();
+					break;
+				}
+			}
+
+		});
+		return builder.create();
+	}
+
 }
